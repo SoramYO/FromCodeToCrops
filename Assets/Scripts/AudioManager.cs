@@ -153,4 +153,20 @@ public class AudioManager : MonoBehaviour
                 // Thêm các scene khác nếu cần
         }
     }
+    public void SetMusicVolume(float volume)
+    {
+        foreach (AudioSource track in bgMusic)
+        {
+            track.volume = volume;
+        }
+        titleMusic.volume = volume;
+    }
+
+    public void SetSFXVolume(float volume)
+    {
+        foreach (AudioSource sound in sfx)
+        {
+            sound.volume = volume;
+        }
+    }
 }
