@@ -65,7 +65,6 @@ public class TimeController : MonoBehaviour
         timeActive = false;
 
         currentDay++;
-
         GridInfo.instance.GrowCrop();
 
         PlayerPrefs.SetString("Transition", "Wake Up");
@@ -74,13 +73,15 @@ public class TimeController : MonoBehaviour
             SeasonSystem.instance.NewDay();
         }
         
-        //hồi thể lực khi hết ngày
-        if (PlayerController.instance != null)
+        // Reset time for the new day
+        currentTime = dayStart;
+
+        // Optionally update any UI that shows time
+        if(UIController.instance != null) 
         {
-            PlayerController.instance.UpdateStaminaUI();
+            UIController.instance.UpdateTimeText(currentTime);
         }
 
-        //StartDay();
         SceneManager.LoadScene(dayEndScene);
     }
 
