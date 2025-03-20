@@ -34,25 +34,28 @@ namespace GameSave
     [Serializable]
     public class SaveData
     {
-        // Thông tin người chơi
+        // Player info
         public float playerPosX;
         public float playerPosY;
         public float playerStamina;
 
-        // Hệ thống nông trại
+        // Farm tiles
         public List<FarmTileData> farmTiles = new List<FarmTileData>();
 
-        // Dữ liệu vật phẩm
+        // Currency and other inventory items 
         public int money;
         public SerializableDictionary seedInventory;
         public SerializableDictionary cropInventory;
 
-        // Dữ liệu thú cưng
+        // Animal Inventory (Fish, Pig, etc.)
+        public SerializableDictionary animalInventory;
+
+        // Pet info
         public string petName;
         public int petAffection;
         public int petFoodCount;
 
-        // Thời gian và mùa
+        // Time and Season
         public int currentDay;
         public int currentSeason;
         public float currentTime;

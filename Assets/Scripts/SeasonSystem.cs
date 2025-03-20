@@ -61,7 +61,14 @@ public class SeasonSystem : MonoBehaviour
 		currentSeasonDay++;
 		if (currentSeasonDay > daysPerSeason)
 		{
-			AdvanceSeason();
+			currentSeasonDay = 1;
+			currentSeason = (Season)(((int)currentSeason + 1) % 4);
+
+			// Cập nhật hiệu ứng khi đổi mùa
+			if (EffectSeason.instance != null)
+			{
+				EffectSeason.instance.UpdateSeasonEffects();
+			}
 		}
 
 		UpdateSeasonUI();
@@ -108,7 +115,7 @@ public class SeasonSystem : MonoBehaviour
 		}
 	}
 
-	private string GetSeasonName()
+	public string GetSeasonName()
 	{
 		switch (currentSeason)
 		{
@@ -191,6 +198,17 @@ public class SeasonSystem : MonoBehaviour
 		}
 
 		return 1.0f; // Tốc độ mặc định
+	}
+	public void ChangeSeason(Season newSeason)
+	{
+		currentSeason = newSeason;
+		// Code khác để cập nhật UI mùa...
+
+		// Thêm đoạn này để cập nhật hiệu ứng
+		if (EffectSeason.instance != null)
+		{
+			EffectSeason.instance.UpdateSeasonEffects();
+		}
 	}
 	public void ForceChangeSeasonForTesting()
 	{

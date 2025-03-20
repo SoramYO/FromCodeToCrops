@@ -21,6 +21,7 @@ public class SaveManager : MonoBehaviour
         }
     }
 
+
     void Start()
     {
         // Tự động tải game khi khởi động scene
@@ -42,11 +43,14 @@ public class SaveManager : MonoBehaviour
             data.playerStamina = PlayerController.instance.currentStamina;
         }
 
+
+
+
         // Lưu trạng thái nông trại
         if (GridController.instance != null)
         {
             data.farmTiles = new List<FarmTileData>();
-            
+
             for (int y = 0; y < GridController.instance.blockRows.Count; y++)
             {
                 for (int x = 0; x < GridController.instance.blockRows[y].blocks.Count; x++)
@@ -93,12 +97,13 @@ public class SaveManager : MonoBehaviour
             }
         }
 
+
         // Lưu thông tin thú cưng
         if (PetSystem.instance != null)
         {
             data.petName = PetSystem.instance.petName;
             data.petAffection = PetSystem.instance.affectionLevel;
-            
+
             // Lấy thức ăn thú cưng từ PlayerPrefs
             data.petFoodCount = PlayerPrefs.GetInt("PetFoodCount", 0);
         }
@@ -111,10 +116,13 @@ public class SaveManager : MonoBehaviour
         // Lưu ngày và mùa (KHÔNG lưu thời gian trong ngày)
         if (TimeController.instance != null)
         {
-            // Chỉ lưu ngày hiện tại, không lưu thời gian
+            // Lưu ngày hiện tại
             data.currentDay = TimeController.instance.currentDay;
-            // Đặt currentTime thành giá trị mặc định
-            data.currentTime = -1; // Sử dụng -1 để đánh dấu là không sử dụng
+
+            // Thay đổi: Lưu thời gian hiện tại thay vì đặt -1
+            data.currentTime = TimeController.instance.currentTime;
+
+            Debug.Log($"Đang lưu thời gian: Ngày {data.currentDay}, Thời gian {data.currentTime}");
         }
 
         if (SeasonSystem.instance != null)
@@ -162,6 +170,7 @@ public class SaveManager : MonoBehaviour
                     PlayerController.instance.UpdateStaminaUI();
                 }
 
+
                 // Khôi phục nông trại
                 if (GridController.instance != null)
                 {
@@ -174,18 +183,18 @@ public class SaveManager : MonoBehaviour
                             block.currentStage = GrowBlock.GrowthStage.barren;
                             block.isWatered = false;
                             block.cropSR.sprite = null;
-                            
+
                             // Thiết lập trạng thái từ dữ liệu đã lưu
                             if (tileData.isPlowed || tileData.growthStage > 0)
                             {
                                 block.currentStage = (GrowBlock.GrowthStage)tileData.growthStage;
                             }
-                            
+
                             if (tileData.isWatered)
                             {
                                 block.isWatered = true;
                             }
-                            
+
                             // Khôi phục cây trồng nếu có
                             if (!string.IsNullOrEmpty(tileData.cropType) && tileData.growthStage > (int)GrowBlock.GrowthStage.ploughed)
                             {
@@ -193,9 +202,9 @@ public class SaveManager : MonoBehaviour
                                 {
                                     block.cropType = (CropController.CropType)Enum.Parse(
                                         typeof(CropController.CropType), tileData.cropType);
-                                    
+
                                     block.growFailChance = tileData.growthTime;
-                                    
+
                                     // Cập nhật sprite của cây trồng
                                     block.SetSoilSprite();
                                     block.UpdateCropSprite();
@@ -261,7 +270,7 @@ public class SaveManager : MonoBehaviour
                 {
                     PetSystem.instance.petName = data.petName;
                     PetSystem.instance.affectionLevel = data.petAffection;
-                    
+
                     // Lưu vào PlayerPrefs
                     PlayerPrefs.SetInt("PetFoodCount", data.petFoodCount);
                 }
@@ -269,7 +278,7 @@ public class SaveManager : MonoBehaviour
                 {
                     // Lưu vào PlayerPrefs nếu không có instance
                     PlayerPrefs.SetInt("PetFoodCount", data.petFoodCount);
-                    
+
                     // Nếu có PetMenuController, cập nhật UI
                     PetMenuController petMenuCtrl = FindObjectOfType<PetMenuController>();
                     if (petMenuCtrl != null)
@@ -299,15 +308,23 @@ public class SaveManager : MonoBehaviour
                 {
                     // Khôi phục ngày
                     TimeController.instance.currentDay = data.currentDay;
-                    
-                    // Luôn đặt thời gian về buổi sáng
-                    TimeController.instance.currentTime = TimeController.instance.dayStart;
-                    
+
+                    // Thay đổi: Khôi phục thời gian hiện tại thay vì đặt về sáng
+                    if (data.currentTime >= 0) // Kiểm tra nếu có lưu thời gian
+                    {
+                        TimeController.instance.currentTime = data.currentTime;
+                    }
+                    else
+                    {
+                        // Nếu là file lưu cũ (không có thời gian), mặc định về sáng
+                        TimeController.instance.currentTime = TimeController.instance.dayStart;
+                    }
+
                     // ĐẢM BẢO timeActive = true để thời gian chạy
                     TimeController.instance.GetType().GetField("timeActive", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(TimeController.instance, true);
-                    
-                    Debug.Log("Đã reset thời gian về sáng và kích hoạt thời gian");
-                    
+
+                    Debug.Log($"Đã tải thời gian: Ngày {TimeController.instance.currentDay}, Thời gian {TimeController.instance.currentTime}");
+
                     // Cập nhật UI thời gian
                     if (UIController.instance != null)
                     {
