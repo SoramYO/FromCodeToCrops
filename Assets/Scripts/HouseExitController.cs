@@ -20,19 +20,7 @@ public class HouseExitController : MonoBehaviour
             if (TimeController.instance != null)
             {
                 // Nếu không có dự báo đang chờ, tạo một dự báo mới
-                if (!TimeController.instance.hasPendingWeatherForecast)
-                {
-                    Debug.Log("Không có dự báo, tạo dự báo mới");
-                    TimeController.instance.ForceSavePendingForecast();
-                }
-                
-                Debug.Log($"TimeController tồn tại, hasPendingWeatherForecast: {TimeController.instance.hasPendingWeatherForecast}");
-                
-                if (TimeController.instance.hasPendingWeatherForecast)
-                {
-                    hasTriggeredForecast = true;
-                    StartCoroutine(ShowForecastWithDelay());
-                }
+
             }
         }
     }
@@ -45,7 +33,6 @@ public class HouseExitController : MonoBehaviour
         if (TimeController.instance != null)
         {
             Debug.Log("Hiển thị dự báo sau khi đợi");
-            TimeController.instance.ShowPendingWeatherForecast();
         }
         
         // Reset để có thể kích hoạt lại nếu cần

@@ -117,6 +117,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -309,7 +322,15 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      farming-emotions_0: 4731764149391736904
+      farming-emotions_1: 7079058210388319059
+      farming-emotions_2: 8764865665207047146
+      farming-emotions_3: 4077700447437910878
+      farming-emotions_4: -5286156015888659629
+      farming-emotions_5: -7132706887984170366
+      farming-emotions_6: -74478631658528523
+      farming-emotions_7: 6032290285938540656
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

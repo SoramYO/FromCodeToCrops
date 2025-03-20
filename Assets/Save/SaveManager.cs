@@ -108,11 +108,13 @@ public class SaveManager : MonoBehaviour
             data.petFoodCount = PlayerPrefs.GetInt("PetFoodCount", 0);
         }
 
-        // Lưu thời gian và mùa
+        // Lưu ngày và mùa (KHÔNG lưu thời gian trong ngày)
         if (TimeController.instance != null)
         {
-            data.currentTime = TimeController.instance.currentTime;
+            // Chỉ lưu ngày hiện tại, không lưu thời gian
             data.currentDay = TimeController.instance.currentDay;
+            // Đặt currentTime thành giá trị mặc định
+            data.currentTime = -1; // Sử dụng -1 để đánh dấu là không sử dụng
         }
 
         if (SeasonSystem.instance != null)
@@ -292,11 +294,19 @@ public class SaveManager : MonoBehaviour
                     }
                 }
 
-                // Khôi phục thời gian và mùa
+                // Khôi phục ngày và mùa vụ, nhưng LUÔN đặt thời gian về buổi sáng
                 if (TimeController.instance != null)
                 {
-                    TimeController.instance.currentTime = data.currentTime;
+                    // Khôi phục ngày
                     TimeController.instance.currentDay = data.currentDay;
+                    
+                    // Luôn đặt thời gian về buổi sáng
+                    TimeController.instance.currentTime = TimeController.instance.dayStart;
+                    
+                    // ĐẢM BẢO timeActive = true để thời gian chạy
+                    TimeController.instance.GetType().GetField("timeActive", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(TimeController.instance, true);
+                    
+                    Debug.Log("Đã reset thời gian về sáng và kích hoạt thời gian");
                     
                     // Cập nhật UI thời gian
                     if (UIController.instance != null)
@@ -329,5 +339,3 @@ public class SaveManager : MonoBehaviour
         }
     }
 }
-
-// Các lớp StringIntPair và SerializableDictionary đã được chuyển sang SaveData.cs

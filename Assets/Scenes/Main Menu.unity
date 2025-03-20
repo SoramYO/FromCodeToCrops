@@ -2764,6 +2764,7 @@ MonoBehaviour:
   levelToStart: StoryIntro
   guideToStart: Guide
   mainMenu: 
+  continueButton: {fileID: 208639975}
 --- !u!114 &856246307
 MonoBehaviour:
   m_ObjectHideFlags: 0

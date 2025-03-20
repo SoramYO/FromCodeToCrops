@@ -11,7 +11,7 @@ public class PigInteraction : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             playerInRange = true;
-            UIController.instance.ShowMessage("Nhấn G để tương tác với Pig");
+          //  UIController.instance.ShowMessage("Nhấn G để tương tác với Pig");
         }
     }
 

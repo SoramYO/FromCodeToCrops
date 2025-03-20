@@ -12,6 +12,31 @@ public class FishingUIController : MonoBehaviour
     {
         yesButton.onClick.AddListener(YesFishing);
         noButton.onClick.AddListener(NoFishing);
+        DontDestroyOnLoad(gameObject);
+        
+        // Tìm fishingManager nếu chưa được gán
+        if (fishingManager == null)
+        {
+            fishingManager = FindObjectOfType<FishingManager>();
+        }
+    }
+    void OnEnable()
+    {
+        // Tìm và gán lại FishingManager mỗi khi UI panel được hiển thị
+        if (fishingManager == null)
+        {
+            // Tìm từ FishingSpotTrigger
+            FishingSpotTrigger trigger = FindObjectOfType<FishingSpotTrigger>();
+            if (trigger != null && trigger.fishingManager != null)
+            {
+                fishingManager = trigger.fishingManager;
+            }
+            else
+            {
+                // Tìm trực tiếp
+                fishingManager = FindObjectOfType<FishingManager>();
+            }
+        }
     }
 
     void YesFishing()
