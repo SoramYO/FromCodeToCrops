@@ -1,95 +1,126 @@
-﻿using System.Collections;
-using System.Linq;
-using UnityEngine;
-using UnityEngine.Audio;
+﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PigController : MonoBehaviour
 {
-    public float moveSpeed = 2f;
-    public float changeTargetTime = 3f;
-    public float moveRadius = 3f;
+    public static PigController instance;
 
-    private Vector2 targetPosition;
-    private Rigidbody2D rb;
-    private SpriteRenderer spriteRenderer;
-    private Animator animator;
-    private AudioSource audioSource;
+    private int pigletCount = 0; // Số lượng Piglet
+    private bool isSad = false; // Trạng thái Pig
+    public Sprite pigletSprite; // Ảnh Piglet (Gán trong Inspector)
+    public int pigletPrice = 50; // Giá bán Piglet
+    private bool playerInRange;
+    private int interactionCount;
 
-    public AudioClip walkSound; // Âm thanh di chuyển
-
-
-    void Start()
+    private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>(); 
-        StartCoroutine(ChangeTargetRoutine());
-        rb.freezeRotation = true;
-        audioSource = GetComponent<AudioSource>();
-        AudioManager.instance.sfx = AudioManager.instance.sfx.Append(audioSource).ToArray();
-    }
-
-    void Update()
-    {
-        MoveToTarget();
-    }
-
-    void MoveToTarget()
-    {
-        float distance = Vector2.Distance(transform.position, targetPosition);
-
-        if (distance > 0.2f) 
+        if (FindObjectsOfType<InventoryController>().Length > 1)
         {
-            Vector2 direction = (targetPosition - (Vector2)transform.position).normalized;
-            rb.linearVelocity = direction * moveSpeed;
-
-            
-            if (Mathf.Abs(direction.x) > 0.1f)
-            {
-                spriteRenderer.flipX = direction.x > 0;
-            }
-
-            animator.SetBool("isWalking", true);
-            if (!audioSource.isPlaying)
-            {
-                audioSource.clip = walkSound;
-                audioSource.volume = 3.0f;
-                audioSource.Play();
-            }
+            Destroy(gameObject);
+            return;
         }
         else
         {
-            rb.linearVelocity = Vector2.zero;
-            animator.SetBool("isWalking", false);
+            DontDestroyOnLoad(gameObject);
+        }
+
+        if (instance == null)
+        {
+            instance = this;
+            Debug.Log("✅ PigController đã được khởi tạo!");
+        }
+        else
+        {
+            Debug.LogWarning("⚠ Có nhiều hơn 1 PigController, đang xóa bớt.");
+            Destroy(gameObject);
+        }
+
+    }
+
+
+    private void Start()
+    {
+        if (pigletSprite == null)
+        {
+            Debug.LogError("⚠ pigletSprite chưa được gán trong PigController!");
         }
     }
 
-    IEnumerator ChangeTargetRoutine()
+    public bool IsSadPig()
     {
-        while (true)
+        Debug.Log($"🔍 Kiểm tra trạng thái Pig: {isSad}");
+        return isSad;
+    }
+
+    public void SetSad(bool value)
+    {
+        isSad = value;
+        Debug.Log($"😢 Pig trạng thái cập nhật: {isSad}");
+    }
+
+    public void CheerUpPig()
+    {
+        isSad = false;
+        Debug.Log("Pig đã được dỗ dành!");
+    }
+
+    public void AddPiglet()
+    {
+        pigletCount++;
+        Debug.Log($"Một Piglet mới được sinh ra! Tổng số Piglet: {pigletCount}");
+    }
+
+    public int GetPigletCount()
+    {
+        return pigletCount;
+    }
+
+    public bool SellPiglet()
+    {
+        if (pigletCount > 0)
         {
-            ChangeTargetPosition(); 
-            animator.SetBool("isWalking", true); 
+            pigletCount--;
+            CurrencyController.instance?.AddMoney(pigletPrice); // Đảm bảo CurrencyController không bị null
+            Debug.Log($"Bạn đã bán 1 Piglet! Còn lại: {pigletCount}");
+            return true;
+        }
+        else
+        {
+            Debug.Log("Không có Piglet để bán!");
+            return false;
+        }
+    }
+    private void Update()
+    {
+        if (playerInRange && (Keyboard.current.eKey.wasPressedThisFrame || Input.GetKeyDown(KeyCode.G)))
+        {
+            Debug.Log("👀 Player đã nhấn G để tương tác với Pig!");
 
-            yield return new WaitForSeconds(changeTargetTime);
+            if (PigController.instance == null)
+            {
+                Debug.LogError("❌ PigController.instance bị null trong PigInteraction!");
+                return;
+            }
 
-            rb.linearVelocity = Vector2.zero;
-            animator.SetBool("isWalking", false); 
+            if (PigController.instance.IsSadPig()) // Kiểm tra nếu Pig đang buồn
+            {
+                interactionCount++;
+                Debug.Log($"✅ Số lần tương tác với Pig: {interactionCount}");
 
-            yield return new WaitForSeconds(4f);
+                PigController.instance.CheerUpPig(); // Dỗ dành Pig
+
+                if (interactionCount >= 3)
+                {
+                    Debug.Log("🎉 Đã đủ 3 lần tương tác, sẽ sinh Piglet!");
+                    AddPiglet();
+                    interactionCount = 0;
+                }
+            }
+            else
+            {
+                Debug.Log("ℹ Pig hiện không buồn, không thể tương tác.");
+            }
         }
     }
 
-    void ChangeTargetPosition()
-    {
-        Vector2 newTarget;
-        do
-        {
-            float x = transform.position.x + Random.Range(-moveRadius, moveRadius);
-            float y = transform.position.y + Random.Range(-moveRadius, moveRadius);
-            newTarget = new Vector2(x, y);
-        } while (Vector2.Distance(newTarget, transform.position) < 0.5f);
-
-        targetPosition = newTarget;
-    }
 }

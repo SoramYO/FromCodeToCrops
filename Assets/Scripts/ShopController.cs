@@ -5,6 +5,7 @@ public class ShopController : MonoBehaviour
     public ShopSeedDisplay[] seeds;
     public ShopCropDisplay[] crops;
     public ShopFishDisplay[] fishes;
+    public ShopPigDisplay[] pigs;
     [Header("Pet Items")]
     public ShopItemDisplay petFoodItem;
 
@@ -53,6 +54,10 @@ public class ShopController : MonoBehaviour
                 foreach (ShopFishDisplay fish in fishes)
                 {
                     fish.UpdateDisplay();
+                }
+                foreach (ShopPigDisplay pig in pigs)
+                {
+                    pig.UpdateDisplay();
                 }
 
             }
