@@ -22168,7 +22168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentSeason: 0
-  daysPerSeason: 1
+  daysPerSeason: 10
   currentSeasonDay: 1
   seasonNameText: {fileID: 795979127}
   seasonDayText: {fileID: 0}
