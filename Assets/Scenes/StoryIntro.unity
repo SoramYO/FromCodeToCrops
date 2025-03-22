@@ -763,9 +763,21 @@ MonoBehaviour:
   - {fileID: 552518130}
   - {fileID: 1849659253}
   imageTransitionSpeed: 1
-  pageSounds: []
+  pageSounds:
+  - {fileID: 8300000, guid: bdd095a9822a36a4abc81cd12b61f876, type: 3}
+  - {fileID: 8300000, guid: 789c753e6f1fad14e8264c5840aa95eb, type: 3}
+  - {fileID: 8300000, guid: 6ed2c0c57a848d24ba4e2bcbab08f411, type: 3}
+  - {fileID: 8300000, guid: c707c5aca622e704b9918531ad6c2565, type: 3}
   typingSound: {fileID: 0}
   audioSource: {fileID: 0}
+  voiceClips:
+  - {fileID: 8300000, guid: bdd095a9822a36a4abc81cd12b61f876, type: 3}
+  - {fileID: 8300000, guid: 789c753e6f1fad14e8264c5840aa95eb, type: 3}
+  - {fileID: 8300000, guid: 6ed2c0c57a848d24ba4e2bcbab08f411, type: 3}
+  - {fileID: 8300000, guid: c707c5aca622e704b9918531ad6c2565, type: 3}
+  voiceSource: {fileID: 0}
+  voiceVolume: 3.37
+  useVoiceOver: 1
 --- !u!114 &1152467520
 MonoBehaviour:
   m_ObjectHideFlags: 0

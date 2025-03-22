@@ -9,6 +9,7 @@ public class InventoryController : MonoBehaviour
     public CropDisplay[] crops;
     public FishDisplay[] fishs;
     public PigDisplay[] pigs;
+    public BananaDisplay[] bananas;
 
     private void Awake()
     {
@@ -74,6 +75,10 @@ public class InventoryController : MonoBehaviour
         foreach (PigDisplay pig in pigs)
         {
             pig.UpdateDisplay();
+        }
+        foreach (BananaDisplay banana in bananas)
+        {
+            banana.UpdateDisplay();
         }
     }
 }

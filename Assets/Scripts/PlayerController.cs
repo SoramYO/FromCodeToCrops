@@ -219,6 +219,19 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.zero, 0.1f);
+            if (hit.collider != null)
+            {
+                BananaTreeController bananaTree = hit.collider.GetComponent<BananaTreeController>();
+                if (bananaTree != null)
+                {
+                    bananaTree.HarvestBanana(); // Gọi hàm hái chuối
+                }
+            }
+        }
+
         if (hasSwitchedTool == true)
         {
             //FindFirstObjectByType<UIController>().SwitchTool((int)currentTool);
@@ -277,14 +290,6 @@ public class PlayerController : MonoBehaviour
                 Debug.LogWarning("Pet Menu Controller chưa được gán trong Inspector!");
         }
 
-        // Giữ lại tính năng nhấn P để mở menu thú cưng từ xa
-        if (Keyboard.current.pKey.wasPressedThisFrame)
-        {
-            if (petMenuController != null)
-                petMenuController.TogglePetMenu();
-            else
-                Debug.LogWarning("Pet Menu Controller chưa được gán trong Inspector!");
-        }
     }
 
     void UseTool()
