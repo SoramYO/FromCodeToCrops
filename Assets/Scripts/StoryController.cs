@@ -27,10 +27,17 @@ public class StoryController : MonoBehaviour
     [Header("Background Images")]
     public Image[] backgroundImages;
     public float imageTransitionSpeed = 1.0f;
+    
     [Header("Audio")]
-    public AudioClip[] pageSounds;
-    public AudioClip typingSound;
-    public AudioSource audioSource;
+    public AudioClip[] pageSounds; // Âm thanh nền cho mỗi trang
+    public AudioClip typingSound; // Âm thanh đánh máy
+    public AudioSource audioSource; // AudioSource hiện tại
+    
+    [Header("Voice Over")]
+    public AudioClip[] voiceClips; // Thêm voice clips cho mỗi trang
+    public AudioSource voiceSource; // AudioSource riêng cho voice
+    public float voiceVolume = 1.0f; // Âm lượng voice
+    public bool useVoiceOver = true; // Tùy chọn bật/tắt voice
 
     private void Start()
     {
@@ -43,6 +50,14 @@ public class StoryController : MonoBehaviour
         // Gán các sự kiện cho nút
         continueButton.onClick.AddListener(NextPage);
         skipButton.onClick.AddListener(SkipToGame);
+        
+        // Tạo AudioSource cho voice nếu chưa có
+        if (voiceSource == null && useVoiceOver)
+        {
+            voiceSource = gameObject.AddComponent<AudioSource>();
+            voiceSource.volume = voiceVolume;
+            voiceSource.playOnAwake = false;
+        }
 
         // Bắt đầu hiển thị trang đầu tiên
         ShowCurrentPage();
@@ -68,10 +83,24 @@ public class StoryController : MonoBehaviour
                 StopCoroutine(typingCoroutine);
 
             typingCoroutine = StartCoroutine(TypeText(storyPages[currentPage]));
+            
+            // Phát voice-over nếu có
+            PlayVoiceOver(currentPage);
         }
         else
         {
             StartCoroutine(FadeAndLoadGame());
+        }
+    }
+    
+    // Phương thức mới để phát voice-over
+    private void PlayVoiceOver(int pageIndex)
+    {
+        if (useVoiceOver && voiceSource != null && voiceClips != null && pageIndex < voiceClips.Length && voiceClips[pageIndex] != null)
+        {
+            voiceSource.Stop();
+            voiceSource.clip = voiceClips[pageIndex];
+            voiceSource.Play();
         }
     }
 
@@ -126,10 +155,22 @@ public class StoryController : MonoBehaviour
             storyText.text = storyPages[currentPage];
             isTyping = false;
             continueButton.gameObject.SetActive(true);
+            
+            // Dừng voice over hiện tại nếu đang skip
+            if (voiceSource != null && voiceSource.isPlaying)
+            {
+                voiceSource.Stop();
+            }
         }
         else
         {
             currentPage++;
+
+            // Dừng voice over trước khi chuyển trang
+            if (voiceSource != null && voiceSource.isPlaying)
+            {
+                voiceSource.Stop();
+            }
 
             // Hiệu ứng fade giữa các trang
             StartCoroutine(FadeTextOut(() =>
@@ -140,8 +181,10 @@ public class StoryController : MonoBehaviour
             }));
         }
     }
+    
     private IEnumerator FadeTextOut(System.Action onComplete)
     {
+        // Code giữ nguyên
         float fadeTime = 0.5f;
         float startAlpha = storyText.color.a;
         float time = 0;
@@ -166,14 +209,27 @@ public class StoryController : MonoBehaviour
             yield return null;
         }
     }
+    
     private void SkipToGame()
     {
+        // Dừng voice over khi skip
+        if (voiceSource != null && voiceSource.isPlaying)
+        {
+            voiceSource.Stop();
+        }
+        
         StartCoroutine(FadeAndLoadGame());
     }
 
     private IEnumerator FadeAndLoadGame()
     {
-        // Kiểm tra null trước khi sử dụng
+        // Dừng voice over khi kết thúc
+        if (voiceSource != null && voiceSource.isPlaying)
+        {
+            voiceSource.Stop();
+        }
+        
+        // Code giữ nguyên
         if (fadePanel != null)
         {
             fadePanel.gameObject.SetActive(true);
@@ -188,31 +244,29 @@ public class StoryController : MonoBehaviour
         }
         else
         {
-            // Nếu không có fadePanel, đợi một khoảng thời gian ngắn
             yield return new WaitForSeconds(0.5f);
             Debug.LogWarning("fadePanel không được gán trong Inspector");
         }
-        // Dừng nhạc story trước khi chuyển scene
+        
         if (AudioManager.instance != null)
         {
             AudioManager.instance.StopAllMusic();
         }
 
-        // Vẫn chuyển scene ngay cả khi không có fadePanel
         SceneManager.LoadScene(nextSceneName);
     }
+    
+    // Các phương thức khác giữ nguyên
     private void TransitionBackground(int pageIndex)
     {
+        // Code giữ nguyên
         StartCoroutine(FadeBackground(pageIndex));
 
-        // Đặt thứ tự đúng sau khi chuyển hình nền
         foreach (Image img in backgroundImages)
         {
-            // Đặt hình nền xuống dưới cùng trong hierarchy
             img.transform.SetAsFirstSibling();
         }
 
-        // Đảm bảo text và nút luôn ở trên cùng
         storyText.transform.SetAsLastSibling();
         continueButton.transform.SetAsLastSibling();
         skipButton.transform.SetAsLastSibling();
@@ -220,13 +274,12 @@ public class StoryController : MonoBehaviour
 
     private IEnumerator FadeBackground(int index)
     {
-        // Ẩn tất cả hình nền
+        // Code giữ nguyên
         foreach (Image img in backgroundImages)
         {
             img.CrossFadeAlpha(0, 0, true);
         }
 
-        // Hiện hình nền mới
         if (index < backgroundImages.Length)
         {
             backgroundImages[index].gameObject.SetActive(true);
@@ -235,8 +288,10 @@ public class StoryController : MonoBehaviour
 
         yield return null;
     }
+    
     private void PlayPageAudio(int pageIndex)
     {
+        // Code giữ nguyên
         if (audioSource != null && pageIndex < pageSounds.Length && pageSounds[pageIndex] != null)
         {
             audioSource.Stop();
