@@ -14270,9 +14270,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentTime: 0
-  dayStart: 7
-  dayEnd: 22
+  dayStart: 6
+  dayEnd: 23
   timeSpeed: 0.195
+  timeActive: 0
   currentDay: 1
   dayEndScene: Day End
 --- !u!4 &391977923
