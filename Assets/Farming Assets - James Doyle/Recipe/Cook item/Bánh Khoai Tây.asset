@@ -19,4 +19,4 @@ MonoBehaviour:
     c\xE0 r\u1ED1t, mang \u0111\u1EBFn s\u1EF1 h\xE0i l\xF2ng cho v\u1ECB gi\xE1c."
   baseValue: 0
   isConsumable: 0
-  recipe: {fileID: 11400000, guid: da3fe1a55db76bd4f89f313bc3622574, type: 2}
+  recipe: {fileID: 11400000, guid: 5027174ccf7333d4db0a6f44256fc392, type: 2}
