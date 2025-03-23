@@ -19,4 +19,4 @@ MonoBehaviour:
     cho m\u1ECDi b\u1EEFa ti\u1EC7c."
   baseValue: 0
   isConsumable: 0
-  recipe: {fileID: 11400000, guid: 585abf235157fd242934b52cf66abd04, type: 2}
+  recipe: {fileID: 11400000, guid: 445bc01af284ada4a89828f41861665f, type: 2}
